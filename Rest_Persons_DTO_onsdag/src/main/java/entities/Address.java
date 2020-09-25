@@ -3,45 +3,42 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dto;
+package entities;
 
-import entities.Address;
-import entities.Person;
+import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 
 /**
  *
  * @author madsa
  */
-public class PersonDTO {
+@Entity
+public class Address implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String fName;
-    private String lName;
-    private String phone;
-    private Address address;
     private String street;
     private String zip;
     private String city;
+    
+    @OneToOne(mappedBy = "address")
+    private Person person;
 
-    public PersonDTO(Person p) {
-        this.fName = p.getFirstName();
-        this.lName = p.getLastName();
-        this.phone = p.getPhone();
-        this.id = p.getId();
-        this.address = p.getAddress();
+    public Address() {
     }
 
-    public PersonDTO(String fn, String ln, String phone, String street, String zip, String city) {
-        this.fName = fn;
-        this.lName = ln;
-        this.phone = phone;
+    public Address(String street, String zip, String city) {
         this.street = street;
         this.zip = zip;
         this.city = city;
-    }
-
-    public PersonDTO() {
     }
 
     public int getId() {
@@ -50,38 +47,6 @@ public class PersonDTO {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getfName() {
-        return fName;
-    }
-
-    public void setfName(String fName) {
-        this.fName = fName;
-    }
-
-    public String getlName() {
-        return lName;
-    }
-
-    public void setlName(String lName) {
-        this.lName = lName;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
     }
 
     public String getStreet() {
@@ -108,9 +73,17 @@ public class PersonDTO {
         this.city = city;
     }
 
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 3;
+        int hash = 7;
         return hash;
     }
 
@@ -125,17 +98,8 @@ public class PersonDTO {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final PersonDTO other = (PersonDTO) obj;
+        final Address other = (Address) obj;
         if (this.id != other.id) {
-            return false;
-        }
-        if (!Objects.equals(this.fName, other.fName)) {
-            return false;
-        }
-        if (!Objects.equals(this.lName, other.lName)) {
-            return false;
-        }
-        if (!Objects.equals(this.phone, other.phone)) {
             return false;
         }
         if (!Objects.equals(this.street, other.street)) {
@@ -147,10 +111,12 @@ public class PersonDTO {
         if (!Objects.equals(this.city, other.city)) {
             return false;
         }
-        if (!Objects.equals(this.address, other.address)) {
+        if (!Objects.equals(this.person, other.person)) {
             return false;
         }
         return true;
     }
+    
+    
 
 }

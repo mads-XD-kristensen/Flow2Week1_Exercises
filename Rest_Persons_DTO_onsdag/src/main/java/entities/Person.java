@@ -2,12 +2,15 @@ package entities;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -31,6 +34,9 @@ public class Person implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date lastEdited;
 
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Address address;
+
     public Person() {
     }
 
@@ -40,6 +46,14 @@ public class Person implements Serializable {
         this.phone = phone;
         this.created = created;
         this.lastEdited = lastEdited;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public int getId() {
@@ -89,5 +103,49 @@ public class Person implements Serializable {
     public void setLastEdited() {
         this.lastEdited = new Date();
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Person other = (Person) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        if (!Objects.equals(this.firstName, other.firstName)) {
+            return false;
+        }
+        if (!Objects.equals(this.lastName, other.lastName)) {
+            return false;
+        }
+        if (!Objects.equals(this.phone, other.phone)) {
+            return false;
+        }
+        if (!Objects.equals(this.created, other.created)) {
+            return false;
+        }
+        if (!Objects.equals(this.lastEdited, other.lastEdited)) {
+            return false;
+        }
+        if (!Objects.equals(this.address, other.address)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 
 }

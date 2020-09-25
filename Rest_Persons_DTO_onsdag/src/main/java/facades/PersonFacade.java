@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import dto.*;
+import entities.Address;
 import java.util.Date;
 import exceptions.*;
 
@@ -40,12 +41,14 @@ public class PersonFacade implements IPersonFacade {
     }
 
     @Override
-    public PersonDTO addPerson(String fName, String lName, String phone) throws MissingInputException {
+    public PersonDTO addPerson(String fName, String lName, String phone, String street, String zip, String city) throws MissingInputException {
         EntityManager em = getEntityManager();
         if (fName.isEmpty() || lName.isEmpty()) {
             throw new MissingInputException("First name and/or Last name is missing");
         }
         Person person = new Person(fName, lName, phone, new Date(), new Date());
+        Address address = new Address(street, zip, city);
+        person.setAddress(address);
         PersonDTO personDTO = new PersonDTO(person);
         try {
             em.getTransaction().begin();
@@ -69,6 +72,7 @@ public class PersonFacade implements IPersonFacade {
         try {
             em.getTransaction().begin();
             em.remove(person);
+            em.remove(person.getAddress());
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -114,14 +118,18 @@ public class PersonFacade implements IPersonFacade {
         if (p.getfName().isEmpty() || p.getlName().isEmpty()) {
             throw new MissingInputException("First name and/or Last name is missing");
         }
+        
         person.setLastEdited();
         person.setFirstName(p.getfName());
         person.setLastName(p.getlName());
         person.setPhone(p.getPhone());
-
+        Address adr = new Address(p.getStreet(), p.getZip(), p.getCity());
+        person.setAddress(adr);
+        
         try {
             em.getTransaction().begin();
             em.merge(person);
+            em.merge(adr);
             em.getTransaction().commit();
         } finally {
             em.clear();
@@ -129,12 +137,15 @@ public class PersonFacade implements IPersonFacade {
         return new PersonDTO(person);
     }
 
-    public static void main(String[] args) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        em.persist(new Person("Mads", "Kristensen", "1234", new Date(), new Date()));
-        em.getTransaction().commit();
-    }
+//    public static void main(String[] args) {
+//        EntityManagerFactory emf = Persistence.createEntityManagerFactory("pu");
+//        EntityManager em = emf.createEntityManager();
+//        Person p1 = new Person("Mads", "Kristensen", "1234", new Date(), new Date());
+//        Address a1 = new Address("Østerbrogade", "100", "Kbh");
+//        p1.setAddress(a1);
+//        em.getTransaction().begin();
+//        em.persist(p1);
+//        em.getTransaction().commit();
+//    }
 
 }
