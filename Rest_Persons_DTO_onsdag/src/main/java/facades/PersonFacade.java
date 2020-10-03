@@ -119,17 +119,17 @@ public class PersonFacade implements IPersonFacade {
             throw new MissingInputException("First name and/or Last name is missing");
         }
         
+        Address adr = new Address(p.getStreet(), p.getZip(), p.getCity());
         person.setLastEdited();
         person.setFirstName(p.getfName());
         person.setLastName(p.getlName());
         person.setPhone(p.getPhone());
-        Address adr = new Address(p.getStreet(), p.getZip(), p.getCity());
         person.setAddress(adr);
+        
         
         try {
             em.getTransaction().begin();
             em.merge(person);
-            em.merge(adr);
             em.getTransaction().commit();
         } finally {
             em.clear();

@@ -30,6 +30,9 @@ public class PersonDTO {
         this.phone = p.getPhone();
         this.id = p.getId();
         this.address = p.getAddress();
+//        this.street = p.getAddress().getStreet();
+//        this.zip = p.getAddress().getZip();
+//        this.city = p.getAddress().getCity();
     }
 
     public PersonDTO(String fn, String ln, String phone, String street, String zip, String city) {

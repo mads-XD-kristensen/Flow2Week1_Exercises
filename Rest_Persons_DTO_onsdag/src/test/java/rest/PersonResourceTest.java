@@ -24,6 +24,7 @@ import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.equalTo;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -136,29 +137,18 @@ public class PersonResourceTest {
                 .body("id", Matchers.notNullValue());
     }
 
-    @Disabled
+    @Disabled // denne test laver en stackoverflow error og jeg har ingen ide om hvorfor????
     @Test
     public void testPersonById() throws Exception {
         int id = r1.getId();
-        PersonDTO pdto;
-        pdto = given().contentType("application/json").get("/person/1")
-                .then().extract().body().jsonPath().get();
 
-        Assertions.assertEquals(id, pdto.getId());
+        given().when().get("/person/find/" + id)
+                .then().body(Matchers.containsString("First"));
     }
 
-    @Disabled
+    // @Disabled
     @Test
     public void testDeletePerson() throws Exception {
-        List<PersonDTO> deleteDTOs;
-
-        given().contentType("application/json")
-                .delete("person/delete/1");
-
-        deleteDTOs = given()
-                .contentType("application/json")
-                .get("/person/all").then()
-                .extract().body().jsonPath().getList("all", PersonDTO.class);
-        Assertions.assertEquals(1, deleteDTOs.size());
+        given().pathParam("id", r1.getId()).when().delete("/person/delete/{id}").then().statusCode(200);
     }
 }
